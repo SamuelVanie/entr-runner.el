@@ -1,4 +1,4 @@
-;;; entr-runner.el --- Run entr on selected files or regex with user-friendly options -*- lexical-binding: t; -*-
+;;; entr-runner.el --- The most complete hotreload package -*- lexical-binding: t; -*-
 
 ;; Author: Samuel Michael Vanié
 ;; Version: 1.0
@@ -8,7 +8,8 @@
 
 ;;; Commentary:
 
-;; This package provides a convenient way to run entr on files selected
+;; This package provides a convenient way to do hotreload using entr on the files
+;; or directories marked
 ;; in Dired or specified by a regex, with user-friendly options.
 
 ;;; Code:
@@ -68,14 +69,44 @@
              else
              collect (format "%s" (shell-quote-argument item)))))
 
+
+(defvar entr-runner-process nil
+  "The current entr-runner process.")
+
+(defun entr-runner-kill-process ()
+  "Kill the current entr-runner process."
+  (interactive)
+  (when entr-runner-process
+    (delete-process entr-runner-process)
+    (setq entr-runner-process nil)
+    (message "entr-runner process killed")))
+
 (defun entr-runner-execute (files-or-command)
   "Execute entr with FILES-OR-COMMAND and user-selected options."
   (let* ((options (entr-runner-select-options))
          (command (read-string "Enter command to run: " entr-runner-last-command))
-         (full-command (entr-runner-build-command options command)))
+         (full-command (entr-runner-build-command options command))
+         (buffer-name "*entr-runner command*"))
     (setq entr-runner-last-command command)
-    (async-shell-command
-     (format "echo -e \"%s\" | %s" files-or-command full-command))))
+    (when (get-buffer buffer-name)
+      (kill-buffer buffer-name))
+    (let ((buffer (get-buffer-create buffer-name)))
+      (with-current-buffer buffer
+        (erase-buffer)
+        (special-mode)  ; Use special-mode for read-only buffer
+        (local-set-key (kbd "C-c k e") 'entr-runner-kill-process))
+      (setq entr-runner-process
+            (start-process-shell-command
+             "entr-runner" buffer
+             (format "echo -e \"%s\" | %s" files-or-command full-command)))
+      (set-process-sentinel
+       entr-runner-process
+       (lambda (proc event)
+         (when (string= event "finished\n")
+           (message "entr-runner process finished"))))
+      (message "entr-runner started in background. Check buffer %s for output. Use C-c C-k to kill the process." buffer-name))))
+
+
 
 (defun entr-runner-dired ()
   "Run entr on marked files in Dired, including all files in marked directories."
