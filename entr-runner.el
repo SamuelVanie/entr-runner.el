@@ -1,5 +1,5 @@
-;;; entr-runner.el --- The most complete hotreload package -*- lexical-binding: t; -*-
-
+;;; entr-runner.el --- The most complete hotreload package -*-
+;; lexical-binding: t; -*-
 ;; Author: Samuel Michael Vanié
 ;; Version: 1.0
 ;; Package-Requires: ((emacs "25.1"))
@@ -8,8 +8,8 @@
 
 ;;; Commentary:
 
-;; This package provides a convenient way to do hotreload using entr on the files
-;; or directories marked
+;; This package provides a convenient way to do hotreload using entr
+;; on the files or directories marked
 ;; in Dired or specified by a regex, with user-friendly options.
 
 ;;; Code:
@@ -45,14 +45,19 @@
 
 (defun entr-runner-select-options ()
   "Prompt user to select options for entr. Press Enter when done."
-  (let ((choices (mapcar (lambda (opt) (cons (format "%c: %s" (car opt) (cadr opt)) (car opt))) entr-runner-options))
+  (let ((choices (mapcar (lambda (opt) (cons (format "%c: %s" (car
+                                                               opt)
+                                                     (cadr opt)) (car
+                                                                  opt)))
+                         entr-runner-options))
         selected-options
         (done nil))
     (while (not done)
       (let* ((prompt (concat "Select options (or press Enter when done):\n"
                              (mapconcat (lambda (c) (car c)) choices "\n")
                              "\n\nSelected: "
-                             (mapconcat (lambda (o) (cadr (assoc o entr-runner-options)))
+                             (mapconcat (lambda (o) (cadr (assoc o
+                                                                 entr-runner-options)))
                                         selected-options
                                         " ")
                              "\n"))
@@ -77,7 +82,8 @@
   (let ((marked-items (dired-get-marked-files t)))
     (cl-loop for item in marked-items
              if (file-directory-p item)
-             collect (shell-command-to-string (format "find %s -type f" (shell-quote-argument item)))
+             collect (shell-command-to-string (format "find %s -type
+f" (shell-quote-argument item)))
              else
              collect (format "%s" (shell-quote-argument item)))))
 
@@ -113,14 +119,16 @@
        (lambda (proc event)
          (when (string= event "finished\n")
            (message "entr-runner process finished"))))
-      (message "entr-runner started in background. Check buffer %s for output. Use %s to kill the process." 
+      (message "entr-runner started in background. Check buffer %s for
+output. Use %s to kill the process."
                buffer-name
                (key-description entr-runner-kill-process-key)))))
 
 
 
 (defun entr-runner-dired ()
-  "Run entr on marked files in Dired, including all files in marked directories."
+  "Run entr on marked files in Dired, including all files in marked
+directories."
   (interactive)
   (let ((files (entr-runner-get-files-from-dired)))
     (if files
