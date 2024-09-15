@@ -59,19 +59,14 @@
     (mapcar (lambda (c) (caddr (assoc c entr-runner-options)))
             (nreverse selected-options))))
 
-;; (split-string (shell-command-to-string "find . -type f") "\n" t)
-;; gets the files in the directory and concatenate them into a list
-
-;; (mapconcat #'identity (split-string (shell-command-to-string "find . -type f") "\n" t) "\\n")
-;; concatenate all of them into a string separated by "\\n"
 (defun entr-runner-get-files-from-dired ()
   "Get files from Dired, including all files in selected directories."
   (let ((marked-items (dired-get-marked-files t)))
     (cl-loop for item in marked-items
              if (file-directory-p item)
-             collect (format "find %s -type f" (shell-quote-argument item))
+             collect (shell-command-to-string (format "find %s -type f" (shell-quote-argument item)))
              else
-             collect (format "echo -e %s" (shell-quote-argument item)))))
+             collect (format "%s" (shell-quote-argument item)))))
 
 (defun entr-runner-execute (files-or-command)
   "Execute entr with FILES-OR-COMMAND and user-selected options."
@@ -80,14 +75,14 @@
          (full-command (entr-runner-build-command options command)))
     (setq entr-runner-last-command command)
     (async-shell-command
-     (format "%s | %s" files-or-command full-command))))
+     (format "echo -e \"%s\" | %s" files-or-command full-command))))
 
 (defun entr-runner-dired ()
   "Run entr on marked files in Dired, including all files in marked directories."
   (interactive)
   (let ((files (entr-runner-get-files-from-dired)))
     (if files
-        (entr-runner-execute (mapconcat 'identity files "\\n"))
+        (entr-runner-execute (mapconcat 'identity files "\n"))
       (message "No files or directories selected in Dired."))))
 
 (defun entr-runner-regex ()
@@ -96,7 +91,7 @@
   (let* ((regex (read-string "Enter regex for files: "))
          (files (directory-files-recursively default-directory regex)))
     (if files
-        (entr-runner-execute (mapconcat 'shell-quote-argument files " "))
+        (entr-runner-execute (mapconcat 'shell-quote-argument files ""))
       (message "No files found matching the regex."))))
 
 
