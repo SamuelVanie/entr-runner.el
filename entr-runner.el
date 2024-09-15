@@ -141,7 +141,13 @@ directories."
   (let* ((regex (read-string "Enter regex for files: "))
          (files (directory-files-recursively default-directory regex)))
     (if files
-        (entr-runner-execute (mapconcat 'shell-quote-argument files ""))
+        (entr-runner-execute
+         (mapconcat (lambda (file)
+                      (replace-regexp-in-string
+                       (regexp-quote default-directory) ""
+                       (expand-file-name file)))
+                    files
+                    "\n"))
       (message "No files found matching the regex."))))
 
 
