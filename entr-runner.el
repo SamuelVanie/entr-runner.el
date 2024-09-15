@@ -16,8 +16,20 @@
 
 (require 'dired)
 
+(defgroup entr-runner nil
+  "Customization group for entr-runner."
+  :group 'convenience)
+
+(defcustom entr-runner-kill-process-key (kbd "C-c k e")
+  "Key binding to kill the entr-runner process in the output buffer."
+  :type 'key-sequence
+  :group 'entr-runner)
+
 (defvar entr-runner-last-command nil
   "The last command run with entr.")
+
+(defvar entr-runner-process nil
+  "The current entr-runner process.")
 
 (defvar entr-runner-options
   '((?r "Restart persistent child" "-r")
@@ -70,9 +82,6 @@
              collect (format "%s" (shell-quote-argument item)))))
 
 
-(defvar entr-runner-process nil
-  "The current entr-runner process.")
-
 (defun entr-runner-kill-process ()
   "Kill the current entr-runner process."
   (interactive)
@@ -94,7 +103,7 @@
       (with-current-buffer buffer
         (erase-buffer)
         (special-mode)  ; Use special-mode for read-only buffer
-        (local-set-key (kbd "C-c k e") 'entr-runner-kill-process))
+        (local-set-key entr-runner-kill-process-key 'entr-runner-kill-process))
       (setq entr-runner-process
             (start-process-shell-command
              "entr-runner" buffer
@@ -104,7 +113,9 @@
        (lambda (proc event)
          (when (string= event "finished\n")
            (message "entr-runner process finished"))))
-      (message "entr-runner started in background. Check buffer %s for output. Use C-c C-k to kill the process." buffer-name))))
+      (message "entr-runner started in background. Check buffer %s for output. Use %s to kill the process." 
+               buffer-name
+               (key-description entr-runner-kill-process-key)))))
 
 
 
