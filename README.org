@@ -1,0 +1,49 @@
+#+BEGIN_HTML
+<a href="https://img.shields.io/github/license/SamuelVanie/entr-runner.el">
+  <img src="https://img.shields.io/github/license/SamuelVanie/entr-runner.el" alt="GitHub License">
+</a>
+<a href="https://img.shields.io/badge/Emacs%20-%2029.1%20-%20orange">
+  <img src="https://img.shields.io/badge/Emacs%20-%2029.1%20-%20orange" alt="Emacs Version">
+</a>
+#+END_HTML
+
+* entr-runner.el
+
+A complete hot reload package that let you choose the command you want and can watch multiple files.
+
+** ❓ Why?
+
+I was coding a website with thymeleaf on springboot but I wasn't able to make the hotreload functionality to work properly for me. (Skill issues I know)
+That lead me to this package. It permits to choose one or multiple files/directories or both then write a custom command that will run each time these files are changed.
+
+
+** 💾 Installation
+
+*** Straight
+#+BEGIN_SRC elisp
+(use-package entr-runner
+  :straight (entr-runner :type git :host github :repo "SamuelVanie/entr-runner.el"))
+#+END_SRC
+
+*** Doom Emacs
+#+BEGIN_SRC elisp
+(package! entr-runner
+  :recipe (:host github :repo "SamuelVanie/entr-runner.el"))
+#+END_SRC
+
+# *** MELPA
+# #+BEGIN_SRC elisp
+# (use-package youdotcom
+#   :bind ("C-c y" . youdotcom-enter))
+# #+END_SRC
+
+
+** 💻 Usage
+
+
+** 👊 Contributing
+
+- If you find a bug or have an idea for an improvement, please open an issue about it.
+- If you want to contribute, you can open a pull request and I will be happy to review it.
+- If you want to add a new feature, please open an issue first to discuss about it.
+- If you want to support me, you can star the repository.
