@@ -1,7 +1,4 @@
 #+BEGIN_HTML
-<a href="https://img.shields.io/github/license/SamuelVanie/entr-runner.el">
-  <img src="https://img.shields.io/github/license/SamuelVanie/entr-runner.el" alt="GitHub License">
-</a>
 <a href="https://img.shields.io/badge/Emacs%20-%2029.1%20-%20orange">
   <img src="https://img.shields.io/badge/Emacs%20-%2029.1%20-%20orange" alt="Emacs Version">
 </a>
@@ -39,6 +36,16 @@ That lead me to this package. It permits to choose one or multiple files/directo
 
 
 ** 💻 Usage
+
+
+Two possibilities :
+- You can mark your files or directories inside dired (use the "*" key to do so), then run the command =entr-runner-dired=. That command will prompt you info about the flags that you wish to add to the command and there it is.
+- You can also use the command =entr-runner-regex= that will prompt you for regex that will select all the files from the /default-directory/ and run the command that you will choose on them.
+
+You can stop the process by running the command =entr-runner-kill-process=. That will kill the process in charge of watching the files.
+
+When you run one of the entr commands, a special buffer will be created that is called *entr-runner*. This is the buffer in which you can check the logs of the command you ran.
+
 
 
 ** 👊 Contributing
