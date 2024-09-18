@@ -82,8 +82,8 @@
   (let ((marked-items (dired-get-marked-files t)))
     (cl-loop for item in marked-items
              if (file-directory-p item)
-             collect (shell-command-to-string (format "find %s -type
-f" (shell-quote-argument item)))
+             collect (shell-command-to-string (format "find %s -type f"
+                                                      (shell-quote-argument item)))
              else
              collect (format "%s" (shell-quote-argument item)))))
 
