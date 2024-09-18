@@ -48,6 +48,14 @@ When you run one of the entr commands, a special buffer will be created that is 
 
 
 
+** Ideas
+
+Instead of entr that doesn't work on windows, you could use some other command line utility like watchmedo(in watchdog) that is made in python and can also run on windows.
+
+entr only works on UNIX systems, you must have a linux machine or a mac or WSL if that is possible.
+
+
+
 ** 👊 Contributing
 
 - If you find a bug or have an idea for an improvement, please open an issue about it.
