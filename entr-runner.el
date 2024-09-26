@@ -1,7 +1,7 @@
 ;;; entr-runner.el --- The most complete hotreload package -*-
 ;; lexical-binding: t; -*-
 ;; Author: Samuel Michael Vanié
-;; Version: 1.0
+;; Version: 1.1
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: convenience, files
 ;; URL: https://github.com/SamuelVanie/entr-runner
@@ -150,6 +150,38 @@ directories."
                     "\n"))
       (message "No files found matching the regex."))))
 
+(defun entr-runner-install ()
+  "Automatically download and install entr based on the system type."
+  (interactive)
+  (if (eq system-type 'windows-nt)
+      (message "entr is not available for Windows systems.")
+    (let* ((temp-dir (make-temp-file "entr-install" t))
+           (install-script (expand-file-name "install-entr.sh" temp-dir))
+           (sudo-password (read-passwd "Enter sudo password: ")))
+      (with-temp-file install-script
+        (insert "#!/bin/bash\n")
+        (insert "set -e\n")
+        (insert "if command -v brew >/dev/null 2>&1; then\n")
+        (insert "  brew install entr\n")
+        (insert "elif command -v apt-get >/dev/null 2>&1; then\n")
+        (insert "  echo $1 | sudo -S apt-get update && sudo -S apt-get install -y entr\n")
+        (insert "elif command -v dnf >/dev/null 2>&1; then\n")
+        (insert "  echo $1 | sudo -S dnf install -y entr\n")
+        (insert "elif command -v pacman >/dev/null 2>&1; then\n")
+        (insert "  echo $1 | sudo -S pacman -S --noconfirm entr\n")
+        (insert "else\n")
+        (insert "  echo 'Unable to detect package manager. Please install entr manually.'\n")
+        (insert "  exit 1\n")
+        (insert "fi\n")
+        (insert "echo 'entr has been successfully installed!'\n"))
+      (set-file-modes install-script #o755)
+      (if (zerop (call-process-shell-command
+                  (format "bash %s %s" 
+                          (shell-quote-argument install-script)
+                          (shell-quote-argument sudo-password))
+                  nil (get-buffer-create "*entr-install*") t))
+          (message "entr has been successfully installed.")
+        (message "Failed to install entr. Check the *entr-install* buffer for details.")))))
 
 (provide 'entr-runner)
 
