@@ -15,7 +15,7 @@ A complete "hot reload" package that let you choose run a command on watched fil
 
 #+BEGIN_HTML
 <p align="center">
-  <img src="./demo_marked_files.gif">
+  <img src="./demo_marked_dired.gif">
 </p>
 #+END_HTML
 
@@ -54,7 +54,7 @@ To be added !
 ** 💻 Usage
 
 Two possibilities :
-- You can mark your files or directories inside dired (use the "*" key to do so), then run the command =entr-runner-dired=. That command will prompt you info about the flags that you wish to add to the command and there it is.
+- You can mark your files or directories inside dired (use the "*" key to do so), then run the command =entr-runner-dired=. That command will prompt you info about the flags that you wish to add to the command and there it is. (see [[*entr-runner.el][demo]])
 - You can also use the command =entr-runner-regex= that will prompt you for regex that will select all the files from the /default-directory/ and run the command that you will choose on them.
 
 You can stop the process by running the command =entr-runner-kill-process=. That will kill the process in charge of watching the files.
