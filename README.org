@@ -65,7 +65,27 @@ When you run one of the entr commands, a special buffer will be created that is 
 
 ** Use Cases
 
+*** Why I created the package
 
+Using thymeleaf on springboot you can set up an autoreload that didn't work for me.
+I just use entr with the option "-r" with the command "gradlew bootRun" on my static files.
+
+
+*** Recompiling automatically your project
+
+Using make or a gcc command you can automatically compile and run your project.
+Command similar to the simple =gcc *.c -o project && ./project=  
+
+
+*** Writing a latex document that will be automatically compiled and showed
+
+Using a program like zathura that automatically load back the file on disk if its changes on disk.
+A command like =pdflatex file.tex -o file.pdf= could help you
+
+
+*** Reloading a web page
+
+If you can access you browser window through the command line, you could automatically reload the web page you're programming.
 
 
 ** Ideas
