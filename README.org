@@ -10,7 +10,7 @@
 
 * entr-runner.el
 
-A complete "hot reload" package that let you choose run a command on watched files.
+A complete "hot reload" package that let you choose a command to run on watched files.
 
 
 #+BEGIN_HTML
@@ -23,6 +23,7 @@ A complete "hot reload" package that let you choose run a command on watched fil
 ** ❓ Why?
 
 I was coding a website with thymeleaf on springboot but I wasn't able to make the hotreload functionality work properly for me. (Skill issues I know)
+
 That lead me to this package. It permits to choose one or multiple files/directories or both then write a custom command that will run each time these files are changed.
 
 
@@ -63,7 +64,7 @@ When you run one of the entr commands, a special buffer will be created that is 
 
 
 
-** Use Cases
+** 💬 Use Cases
 
 *** Why I created the package
 
@@ -85,10 +86,11 @@ A command like =pdflatex file.tex -o file.pdf= could help you
 
 *** Reloading a web page
 
-If you can access you browser window through the command line, you could automatically reload the web page you're programming.
+If you can access you browser window through the command line, you could automatically reload the web page you're programming. (You can use tool like xdotool)
 
 
-** Ideas
+
+** 🤔 Ideas
 
 Instead of entr that doesn't work on windows, you could use some other command line utility like watchmedo(in watchdog) that is made in python and can also run on windows.
 
