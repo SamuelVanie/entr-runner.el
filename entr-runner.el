@@ -33,6 +33,9 @@
 (defvar entr-location (format "%sentr" (expand-file-name user-emacs-directory))
   "The location of the entr binary")
 
+(defvar entr-not-already-exist t
+  "Wherever or not entr is already installed on the current machine")
+
 (defvar entr-runner-last-command nil
   "The last command run with entr.")
 
@@ -47,9 +50,19 @@
     (?p "Postpone first execution until file is modified" "-p"))
   "List of options for entr.")
 
+(defun entr-get-path ()
+  "Test if entr is already in path and set the entr's bin location variable"
+  (let ((command-result (shell-command-to-string "which entr")))
+    (if (string-match "no" command-result)
+        (setq entr-location (format "%sentr/entr" (expand-file-name user-emas-directory)))
+      (setq entr-location (string-trim command-result))
+      (setq entr-not-already-exist nil))))
+
 (defun entr-runner-build-command (options command)
   "Build the entr command with OPTIONS and COMMAND."
-  (concat (format "%s/entr" entr-location) " -n " (mapconcat 'identity options " ") " " command))
+  (concat (format "%s" entr-location) " -n " (mapconcat 'identity
+                                                             options "
+") " " command))
 
 (defun entr-runner-select-options ()
   "Prompt user to select options for entr. Press Enter when done."
@@ -163,33 +176,35 @@ directories."
   (interactive)
   (if (eq system-type 'windows-nt)
       (message "entr is not available for Windows systems.")
-    (let* ((temp-dir (make-temp-file "entr-install" t))
-           (install-script (expand-file-name "install-entr.sh" temp-dir)))
-      (with-temp-file install-script
-        (insert "#!/bin/bash\n")
-        (insert "if command -v entr > /dev/null 2>&1;then\n")
-        (insert (format " mkdir -p %s\n" entr-location))
-        (insert (format " ln -s '$(which entr)' '%s/entr'\n" entr-location))
-        (insert " if [ $? -eq 0 ]; then\n")
-        (insert "  echo 'symlink successfully created'\n")
-        (insert " else\n")
-        (insert "  echo 'failed to create symlink'\n")
-        (insert " fi\n")
-        (insert "else\n")
-        (insert " git clone ")
-        (insert entr-git-link)
-        (insert (format " %s%s\n" (expand-file-name user-emacs-directory) "entr"))
-        (insert (format " cd %sentr\n" (expand-file-name user-emacs-directory)))
-        (insert " ./configure\n")
-        (insert " make test\n")
-        (insert "fi"))
-      (set-file-modes install-script #o755)
-      (if (zerop (call-process-shell-command
-                  (format "bash %s" 
-                          (shell-quote-argument install-script))
-                  nil (get-buffer-create "*entr-install*") t))
-          (message "entr has been successfully installed.")
-        (message "Failed to install entr. Check the *entr-install* buffer for details.")))))
+    (entr-get-path)
+    (when entr-not-already-exist
+        (let* ((temp-dir (make-temp-file "entr-install" t))
+               (install-script (expand-file-name "install-entr.sh" temp-dir)))
+          (with-temp-file install-script
+            (insert "#!/bin/bash\n")
+            (insert "if command -v entr > /dev/null 2>&1;then\n")
+            (insert (format " mkdir -p %s\n" entr-location))
+            (insert (format " ln -s '%s' '%s/entr'\n" (shell-command-to-string "which entr" ) entr-location))
+            (insert " if [ $? -eq 0 ]; then\n")
+            (insert "  echo 'symlink successfully created'\n")
+            (insert " else\n")
+            (insert "  echo 'failed to create symlink'\n")
+            (insert " fi\n")
+            (insert "else\n")
+            (insert " git clone ")
+            (insert entr-git-link)
+            (insert (format " %s%s\n" (expand-file-name user-emacs-directory) "entr"))
+            (insert (format " cd %sentr\n" (expand-file-name user-emacs-directory)))
+            (insert " ./configure\n")
+            (insert " make test\n")
+            (insert "fi"))
+          (set-file-modes install-script #o755)
+          (if (zerop (call-process-shell-command
+                      (format "bash %s" 
+                              (shell-quote-argument install-script))
+                      nil (get-buffer-create "*entr-install*") t))
+              (message "entr has been successfully installed.")
+            (message "Failed to install entr. Check the *entr-install* buffer for details."))))))
 
 (provide 'entr-runner)
 
