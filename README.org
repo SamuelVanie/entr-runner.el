@@ -53,7 +53,7 @@ To be added !
 
 *** ⚠️ After the package installation
 
-You should then run the interactive command =entr-runner-install=, this will automatically download and compile the entr package if it's not present on your computer, or create a symlink to it if it is.
+You should then run the interactive command =entr-runner-install=, this will automatically download and compile the entr package if it's not present on your computer, or setup some variable if it's already the case.
 
 The installation script depends on =which=, which is normally install on most unix machines.
 
