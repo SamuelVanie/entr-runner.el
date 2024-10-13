@@ -32,6 +32,11 @@ That lead me to this package. It permits to choose one or multiple files/directo
 *** Melpa
 
 To be added !
+# #+BEGIN_SRC elisp
+# (use-package youdotcom
+#   :bind ("C-c y" . youdotcom-enter))
+# #+END_SRC
+
 
 *** Straight
 #+BEGIN_SRC elisp
@@ -45,11 +50,12 @@ To be added !
   :recipe (:host github :repo "SamuelVanie/entr-runner.el"))
 #+END_SRC
 
-# *** MELPA
-# #+BEGIN_SRC elisp
-# (use-package youdotcom
-#   :bind ("C-c y" . youdotcom-enter))
-# #+END_SRC
+
+*** ⚠️ After the package installation
+
+You should then run the interactive command =entr-runner-install=, this will automatically download and compile the entr package if it's not present on your computer, or create a symlink to it if it is.
+
+The installation script depends on =which=, which is normally install on most unix machines.
 
 
 ** 💻 Usage
