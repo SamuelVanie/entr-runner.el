@@ -12,6 +12,8 @@
 
 A complete "hot reload" package that let you choose a command to run on watched files.
 
+This package is based on [[https://github.com/eradman/entr][entr]]. Check out that great package.
+
 
 #+BEGIN_HTML
 <p align="center">
