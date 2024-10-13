@@ -49,7 +49,7 @@
 
 (defun entr-runner-build-command (options command)
   "Build the entr command with OPTIONS and COMMAND."
-  (concat "entr -n " (mapconcat 'identity options " ") " " command))
+  (concat (format "%s/entr" entr-location) " -n " (mapconcat 'identity options " ") " " command))
 
 (defun entr-runner-select-options ()
   "Prompt user to select options for entr. Press Enter when done."
