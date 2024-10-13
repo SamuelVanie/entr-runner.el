@@ -82,7 +82,8 @@ I just use entr with the option "-r" with the command "gradlew bootRun" on my st
 
 *** Sync your files do google drive automatically
 
-You can use rclone to automatically sync a directory to your google drive, or any cloud base storage
+You can use rclone to automatically sync a directory to your google drive, or any cloud base storage.
+
 The command I use is : =rclone mount --vfs-cache-mode full org_google:/ ~/.org/=. This command mount your remote file system to a local directory(in this case .org).
 
 
