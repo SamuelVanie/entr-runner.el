@@ -53,8 +53,10 @@
 (defun entr-get-path ()
   "Test if entr is already in path and set the entr's bin location variable"
   (let ((command-result (shell-command-to-string "which entr")))
-    (if (string-match "no" command-result)
-        (setq entr-location (format "%sentr/entr" (expand-file-name user-emas-directory)))
+    (if (string-match "which:" command-result)
+        (progn
+          (setq entr-not-already-exist t)
+          (setq entr-location (format "%sentr/entr" (expand-file-name user-emacs-directory))))
       (setq entr-location (string-trim command-result))
       (setq entr-not-already-exist nil))))
 
