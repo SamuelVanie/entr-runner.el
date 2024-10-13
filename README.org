@@ -24,7 +24,7 @@ This package is based on [[https://github.com/eradman/entr][entr]]. Check out th
 
 ** ❓ Why?
 
-I was coding a website with thymeleaf on springboot but I wasn't able to make the hotreload functionality work properly for me. (Skill issues I know)
+I was coding a website with thymeleaf on springboot but I wasn't able to make the hotreload functionality work properly for me.
 
 That lead me to this package. It permits to choose one or multiple files/directories or both then write a custom command that will run each time these files are changed.
 
