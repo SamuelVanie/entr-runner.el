@@ -25,6 +25,14 @@
   :type 'key-sequence
   :group 'entr-runner)
 
+(defcustom entr-git-link "https://github.com/eradman/entr"
+  "The link to the entr package"
+  :type 'string
+  :group 'entr-runner)
+
+(defvar entr-location (format "%sentr" (expand-file-name user-emacs-directory))
+  "The location of the entr binary")
+
 (defvar entr-runner-last-command nil
   "The last command run with entr.")
 
@@ -156,29 +164,29 @@ directories."
   (if (eq system-type 'windows-nt)
       (message "entr is not available for Windows systems.")
     (let* ((temp-dir (make-temp-file "entr-install" t))
-           (install-script (expand-file-name "install-entr.sh" temp-dir))
-           (sudo-password (read-passwd "Enter sudo password: ")))
+           (install-script (expand-file-name "install-entr.sh" temp-dir)))
       (with-temp-file install-script
         (insert "#!/bin/bash\n")
-        (insert "set -e\n")
-        (insert "if command -v brew >/dev/null 2>&1; then\n")
-        (insert "  brew install entr\n")
-        (insert "elif command -v apt-get >/dev/null 2>&1; then\n")
-        (insert "  echo $1 | sudo -S apt-get update && sudo -S apt-get install -y entr\n")
-        (insert "elif command -v dnf >/dev/null 2>&1; then\n")
-        (insert "  echo $1 | sudo -S dnf install -y entr\n")
-        (insert "elif command -v pacman >/dev/null 2>&1; then\n")
-        (insert "  echo $1 | sudo -S pacman -S --noconfirm entr\n")
+        (insert "if command -v entr > /dev/null 2>&1;then\n")
+        (insert (format " mkdir -p %s\n" entr-location))
+        (insert (format " ln -s '$(which entr)' '%s/entr'\n" entr-location))
+        (insert " if [ $? -eq 0 ]; then\n")
+        (insert "  echo 'symlink successfully created'\n")
+        (insert " else\n")
+        (insert "  echo 'failed to create symlink'\n")
+        (insert " fi\n")
         (insert "else\n")
-        (insert "  echo 'Unable to detect package manager. Please install entr manually.'\n")
-        (insert "  exit 1\n")
-        (insert "fi\n")
-        (insert "echo 'entr has been successfully installed!'\n"))
+        (insert " git clone ")
+        (insert entr-git-link)
+        (insert (format " %s%s\n" (expand-file-name user-emacs-directory) "entr"))
+        (insert (format " cd %sentr\n" (expand-file-name user-emacs-directory)))
+        (insert " ./configure\n")
+        (insert " make test\n")
+        (insert "fi"))
       (set-file-modes install-script #o755)
       (if (zerop (call-process-shell-command
-                  (format "bash %s %s" 
-                          (shell-quote-argument install-script)
-                          (shell-quote-argument sudo-password))
+                  (format "bash %s" 
+                          (shell-quote-argument install-script))
                   nil (get-buffer-create "*entr-install*") t))
           (message "entr has been successfully installed.")
         (message "Failed to install entr. Check the *entr-install* buffer for details.")))))
